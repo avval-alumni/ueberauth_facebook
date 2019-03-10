@@ -37,7 +37,7 @@ defmodule Ueberauth.Strategy.Facebook do
       |> maybe_replace_param(conn, "display", :display)
       |> Enum.filter(fn {k, _v} -> Enum.member?(allowed_params, k) end)
       |> Enum.map(fn {k, v} -> {String.to_existing_atom(k), v} end)
-      |> Keyword.put(:redirect_uri, callback_url(conn))
+      |> Keyword.put(:redirect_uri, "https://annuaire.avval.fr/auth/facebook/callback")
       |> Ueberauth.Strategy.Facebook.OAuth.authorize_url!
       |> IO.inspect
 
@@ -48,7 +48,12 @@ defmodule Ueberauth.Strategy.Facebook do
   Handles the callback from Facebook.
   """
   def handle_callback!(%Plug.Conn{params: %{"code" => code}} = conn) do
-    opts = [redirect_uri: callback_url(conn)]
+    callback_url(conn)
+    |> IO.inspect
+
+    opts =
+      [redirect_uri: "https://annuaire.avval.fr/auth/facebook/callback"]
+      |> IO.inspect
     client = Ueberauth.Strategy.Facebook.OAuth.get_token!([code: code], opts)
     token = client.token
 
