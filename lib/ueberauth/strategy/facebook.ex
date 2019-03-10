@@ -27,6 +27,9 @@ defmodule Ueberauth.Strategy.Facebook do
      |> option(:allowed_request_params)
      |> Enum.map(&to_string/1)
 
+    callback_url(conn)
+    |> IO.inspect
+
     authorize_url = conn.params
       |> maybe_replace_param(conn, "auth_type", :auth_type)
       |> maybe_replace_param(conn, "scope", :default_scope)
@@ -36,6 +39,7 @@ defmodule Ueberauth.Strategy.Facebook do
       |> Enum.map(fn {k, v} -> {String.to_existing_atom(k), v} end)
       |> Keyword.put(:redirect_uri, callback_url(conn))
       |> Ueberauth.Strategy.Facebook.OAuth.authorize_url!
+      |> IO.inspect
 
     redirect!(conn, authorize_url)
   end
